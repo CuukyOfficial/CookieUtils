@@ -40,10 +40,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Sign;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Team;
 
 import com.cryptomorin.xseries.XPotion;
@@ -334,5 +336,23 @@ class OneSevenVersionAdapter implements VersionAdapter {
     @Override
     public void setServerProperty(String key, Object value) {
         this.getServerProperties().setProperty(key, String.valueOf(value));
+    }
+
+    @Override
+    public Entity spawnNametagEntity(Player target, String nametag) {
+        Location location = target.getLocation();
+        World world = target.getWorld();
+
+        // Spawn an invisible baby sheep
+        Sheep sheep = (Sheep) world.spawn(location, Sheep.class);
+        sheep.setBaby();
+        sheep.setInvisible(true);
+        sheep.setCustomName(nametag);
+        sheep.setCustomNameVisible(true);
+
+        // Make the sheep ride the player
+        target.addPassenger(sheep);
+
+        return sheep;
     }
 }
